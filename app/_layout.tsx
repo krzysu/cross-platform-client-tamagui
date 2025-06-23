@@ -6,8 +6,9 @@ import { StatusBar } from 'expo-status-bar'
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native'
 import { useFonts } from 'expo-font'
 import { SplashScreen, Stack } from 'expo-router'
-import { Provider } from './Provider'
-import { useTheme } from 'tamagui'
+import { Provider } from '../contexts/Provider'
+import { useTheme, Spinner, YStack } from 'tamagui'
+import { useAuth } from '../contexts/AuthContext'
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -15,8 +16,7 @@ export {
 } from 'expo-router'
 
 export const unstable_settings = {
-  // Ensure that reloading on `/modal` keeps a back button present.
-  initialRouteName: '(tabs)',
+  initialRouteName: 'index',
 }
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -53,30 +53,24 @@ const Providers = ({ children }: { children: React.ReactNode }) => {
 function RootLayoutNav() {
   const colorScheme = useColorScheme()
   const theme = useTheme()
+  const { isAuthenticated, isLoading } = useAuth()
+
+  // Show loading spinner while checking auth state
+  if (isLoading) {
+    return (
+      <YStack flex={1} justify="center" items="center" bg="$background">
+        <Spinner size="large" color="$blue10" />
+      </YStack>
+    )
+  }
+
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
-      <Stack>
-        <Stack.Screen
-          name="(tabs)"
-          options={{
-            headerShown: false,
-          }}
-        />
-
-        <Stack.Screen
-          name="modal"
-          options={{
-            title: 'Tamagui + Expo',
-            presentation: 'modal',
-            animation: 'slide_from_right',
-            gestureEnabled: true,
-            gestureDirection: 'horizontal',
-            contentStyle: {
-              backgroundColor: theme.background.val,
-            },
-          }}
-        />
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="index" />
+        <Stack.Screen name="(auth)" />
+        <Stack.Screen name="(app)" />
       </Stack>
     </ThemeProvider>
   )
