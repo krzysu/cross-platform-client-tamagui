@@ -1,5 +1,20 @@
 {
   "$schema": "https://biomejs.dev/schemas/1.5.1/schema.json",
+  "files": {
+    "ignore": [
+      "node_modules/**",
+      ".expo/**",
+      ".tamagui/**",
+      "ios/**",
+      "android/**",
+      "dist/**",
+      "build/**",
+      ".yarn/**",
+      "*.d.ts",
+      "tsconfig*.json"
+    ],
+    "maxSize": 10485760
+  },
   "organizeImports": {
     "enabled": false
   },
@@ -64,11 +79,22 @@
     "indentStyle": "space",
     "indentWidth": 2,
     "lineWidth": 90,
-    "ignore": ["**/*/generated-new.ts", "**/*/generated-v2.ts"]
+    "ignore": [
+      "**/*/generated-new.ts",
+      "**/*/generated-v2.ts",
+      "node_modules/**",
+      ".expo/**",
+      "ios/**",
+      "android/**",
+      "dist/**",
+      "build/**",
+      ".yarn/**",
+      "*.d.ts"
+    ]
   },
   "javascript": {
     "formatter": {
-      "trailingComma": "es5",
+      "trailingCommas": "es5",
       "jsxQuoteStyle": "double",
       "semicolons": "asNeeded",
       "quoteStyle": "single"

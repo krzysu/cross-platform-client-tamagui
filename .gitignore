@@ -43,6 +43,9 @@ node_modules
 .env.test.localp
 .env.production.local
 
+# Biome
+.biome/
+
 .expo
 ios
 android
