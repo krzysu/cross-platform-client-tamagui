@@ -1,7 +1,8 @@
 import { Tabs, router } from 'expo-router'
-import { useTheme, Button } from 'tamagui'
+import { useTheme } from 'tamagui'
 import { Home, User, LogOut } from '@tamagui/lucide-icons'
 import { useAuth } from '../../contexts/AuthContext'
+import { DestructiveButton } from '../../components/ui'
 
 export default function AppLayout() {
   const theme = useTheme()
@@ -39,16 +40,14 @@ export default function AppLayout() {
           tabBarIcon: ({ color }) => <Home color={color as any} size={20} />,
           headerShown: true,
           headerRight: () => (
-            <Button
+            <DestructiveButton
               size="$2"
-              bg="$red9"
-              color="$red12"
               onPress={handleLogout}
               icon={<LogOut size={16} />}
               mr="$3"
             >
               Logout
-            </Button>
+            </DestructiveButton>
           ),
         }}
       />
@@ -59,16 +58,14 @@ export default function AppLayout() {
           tabBarIcon: ({ color }) => <User color={color as any} size={20} />,
           headerShown: true,
           headerRight: () => (
-            <Button
+            <DestructiveButton
               size="$2"
-              bg="$red9"
-              color="$red12"
               onPress={handleLogout}
               icon={<LogOut size={16} />}
               mr="$3"
             >
               Logout
-            </Button>
+            </DestructiveButton>
           ),
         }}
       />

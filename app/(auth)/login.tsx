@@ -3,23 +3,13 @@ import { Alert } from 'react-native'
 import { Link, router } from 'expo-router'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import {
-  YStack,
-  XStack,
-  H1,
-  H4,
-  Button,
-  Text,
-  Paragraph,
-  Spinner,
-  Card,
-  ScrollView,
-} from 'tamagui'
+import { YStack, XStack, H1, H4, Text, Paragraph, Card, ScrollView } from 'tamagui'
 import { Mail } from '@tamagui/lucide-icons'
 import { useAuth } from '../../contexts/AuthContext'
 import { loginSchema, type LoginFormData } from '../../lib/schemas'
 import { FormField } from '../../components/forms/FormField'
 import { PasswordField } from '../../components/forms/PasswordField'
+import { PrimaryButton, SecondaryButton } from '../../components/ui'
 
 export default function LoginScreen() {
   const { login } = useAuth()
@@ -75,15 +65,9 @@ export default function LoginScreen() {
               <Paragraph color="$blue11" size="$3">
                 Use any email with password: <Text fontWeight="bold">password123</Text>
               </Paragraph>
-              <Button
-                size="$2"
-                bg="$blue8"
-                color="$blue12"
-                onPress={fillDemoCredentials}
-                mt="$2"
-              >
+              <SecondaryButton size="$2" onPress={fillDemoCredentials} mt="$2">
                 Fill Demo Credentials
-              </Button>
+              </SecondaryButton>
             </YStack>
           </Card>
 
@@ -108,23 +92,15 @@ export default function LoginScreen() {
             />
 
             {/* Login Button */}
-            <Button
+            <PrimaryButton
               size="$4"
-              bg="$blue9"
-              color="$blue12"
               onPress={handleSubmit(onSubmit)}
-              disabled={isLoading}
+              loading={isLoading}
+              loadingText="Signing In..."
               mt="$2"
             >
-              {isLoading ? (
-                <XStack gap="$2" items="center">
-                  <Spinner size="small" color="$blue12" />
-                  <Text color="$blue12">Signing In...</Text>
-                </XStack>
-              ) : (
-                'Sign In'
-              )}
-            </Button>
+              Sign In
+            </PrimaryButton>
 
             {/* Register Link */}
             <XStack justify="center" gap="$2" mt="$4">

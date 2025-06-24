@@ -2,22 +2,12 @@ import { useState } from 'react'
 import { Alert } from 'react-native'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import {
-  YStack,
-  XStack,
-  H3,
-  Button,
-  Card,
-  Avatar,
-  Text,
-  ScrollView,
-  Sheet,
-  Input,
-} from 'tamagui'
+import { YStack, XStack, H3, Card, Avatar, Text, ScrollView, Sheet, Input } from 'tamagui'
 import { User, Mail, Pencil, Save, X } from '@tamagui/lucide-icons'
 import { useAuth } from '../../contexts/AuthContext'
 import { FormField } from '../../components/forms/FormField'
 import { profileSchema, type ProfileFormData } from '../../lib/schemas'
+import { PrimaryButton, SecondaryButton } from '../../components/ui'
 
 export default function ProfileScreen() {
   const { user } = useAuth()
@@ -122,15 +112,13 @@ export default function ProfileScreen() {
 
           {/* Action Buttons */}
           <YStack gap="$3">
-            <Button
+            <PrimaryButton
               size="$4"
-              bg="$blue9"
-              color="$blue12"
               icon={<Pencil size={16} />}
               onPress={() => setIsEditingProfile(true)}
             >
               Edit Profile
-            </Button>
+            </PrimaryButton>
           </YStack>
         </YStack>
       </ScrollView>
@@ -148,12 +136,6 @@ export default function ProfileScreen() {
         <Sheet.Frame p="$4" gap="$4">
           <XStack justify="space-between" items="center">
             <H3>Edit Profile</H3>
-            <Button
-              size="$3"
-              circular
-              icon={<X size={20} />}
-              onPress={() => setIsEditingProfile(false)}
-            />
           </XStack>
 
           <ScrollView flex={1} showsVerticalScrollIndicator={false}>
@@ -177,21 +159,22 @@ export default function ProfileScreen() {
               />
 
               <XStack gap="$3" mt="$4">
-                <Button flex={1} size="$4" onPress={() => setIsEditingProfile(false)}>
-                  Cancel
-                </Button>
-                <Button
+                <SecondaryButton
                   flex={1}
                   size="$4"
-                  bg="$blue9"
-                  color="$blue12"
+                  onPress={() => setIsEditingProfile(false)}
+                >
+                  Cancel
+                </SecondaryButton>
+                <PrimaryButton
+                  flex={1}
+                  size="$4"
                   icon={<Save size={16} />}
                   onPress={profileForm.handleSubmit(onUpdateProfile)}
-                  disabled={isLoading}
-                  opacity={isLoading ? 0.6 : 1}
+                  loading={isLoading}
                 >
                   Save Changes
-                </Button>
+                </PrimaryButton>
               </XStack>
             </YStack>
           </ScrollView>
