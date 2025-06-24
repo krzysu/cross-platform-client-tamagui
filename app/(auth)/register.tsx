@@ -1,12 +1,13 @@
 import { useState } from 'react'
 import { Alert } from 'react-native'
 import { Link, router } from 'expo-router'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
 import {
   YStack,
   XStack,
   H1,
   H4,
-  Input,
   Button,
   Text,
   Paragraph,
@@ -14,31 +15,37 @@ import {
   Card,
   ScrollView,
 } from 'tamagui'
-import { Eye, EyeOff, Mail, Lock, User } from '@tamagui/lucide-icons'
+import { Mail, User } from '@tamagui/lucide-icons'
 import { useAuth } from '../../contexts/AuthContext'
+import { registerSchema, type RegisterFormData } from '../../lib/schemas'
+import { FormField } from '../../components/forms/FormField'
+import { PasswordField } from '../../components/forms/PasswordField'
 
 export default function RegisterScreen() {
   const { register } = useAuth()
-  const [name, setName] = useState('')
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
 
-  const handleRegister = async () => {
-    if (!name.trim() || !email.trim() || !password.trim()) {
-      Alert.alert('Error', 'Please fill in all fields')
-      return
-    }
+  const { control, handleSubmit, setValue } = useForm<RegisterFormData>({
+    resolver: zodResolver(registerSchema),
+    mode: 'onBlur',
+    defaultValues: {
+      name: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
+    },
+  })
 
-    if (password !== 'password123') {
+  const onSubmit = async (data: RegisterFormData) => {
+    // For demo purposes, still check for the demo password
+    if (data.password !== 'password123') {
       Alert.alert('Error', 'For this demo, password must be "password123"')
       return
     }
 
     try {
       setIsLoading(true)
-      await register(email.trim(), password, name.trim())
+      await register(data.email.trim(), data.password, data.name.trim())
       router.replace('/(app)/dashboard')
     } catch (error) {
       Alert.alert(
@@ -51,9 +58,10 @@ export default function RegisterScreen() {
   }
 
   const fillDemoCredentials = () => {
-    setName('Demo User')
-    setEmail('demo@example.com')
-    setPassword('password123')
+    setValue('name', 'Demo User')
+    setValue('email', 'demo@example.com')
+    setValue('password', 'password123')
+    setValue('confirmPassword', 'password123')
   }
 
   return (
@@ -62,7 +70,7 @@ export default function RegisterScreen() {
         <YStack maxW={400} width="100%" self="center" gap="$6" px="$4" py="$8">
           {/* Header */}
           <YStack gap="$2" items="center">
-            <H1 color="$color12" text="center">
+            <H1 color="$color12" text="center" size="$8">
               Create Account
             </H1>
             <Paragraph color="$color11" text="center" size="$4">
@@ -93,106 +101,47 @@ export default function RegisterScreen() {
           {/* Register Form */}
           <YStack gap="$4">
             {/* Name Input */}
-            <YStack gap="$2">
-              <Text color="$color11" fontSize="$3" fontWeight="500">
-                Full Name
-              </Text>
-              <XStack
-                bg="$color2"
-                borderColor="$borderColor"
-                borderWidth={1}
-                items="center"
-                px="$3"
-                height={50}
-              >
-                <User size={20} color="$color10" />
-                <Input
-                  flex={1}
-                  borderWidth={0}
-                  bg="transparent"
-                  placeholder="Enter your full name"
-                  value={name}
-                  onChangeText={setName}
-                  autoCapitalize="words"
-                  autoCorrect={false}
-                />
-              </XStack>
-            </YStack>
+            <FormField
+              control={control}
+              name="name"
+              label="Full Name"
+              placeholder="Enter your full name"
+              icon={User}
+              autoCapitalize="words"
+            />
 
             {/* Email Input */}
-            <YStack gap="$2">
-              <Text color="$color11" fontSize="$3" fontWeight="500">
-                Email
-              </Text>
-              <XStack
-                bg="$color2"
-                borderColor="$borderColor"
-                borderWidth={1}
-                items="center"
-                px="$3"
-                height={50}
-              >
-                <Mail size={20} color="$color10" />
-                <Input
-                  flex={1}
-                  borderWidth={0}
-                  bg="transparent"
-                  placeholder="Enter your email"
-                  value={email}
-                  onChangeText={setEmail}
-                  keyboardType="email-address"
-                  autoCapitalize="none"
-                  autoCorrect={false}
-                />
-              </XStack>
-            </YStack>
+            <FormField
+              control={control}
+              name="email"
+              label="Email"
+              placeholder="Enter your email"
+              icon={Mail}
+              keyboardType="email-address"
+            />
 
             {/* Password Input */}
-            <YStack gap="$2">
-              <Text color="$color11" fontSize="$3" fontWeight="500">
-                Password
-              </Text>
-              <XStack
-                bg="$color2"
-                borderColor="$borderColor"
-                borderWidth={1}
-                items="center"
-                px="$3"
-                height={50}
-              >
-                <Lock size={20} color="$color10" />
-                <Input
-                  flex={1}
-                  borderWidth={0}
-                  bg="transparent"
-                  placeholder="Enter your password"
-                  value={password}
-                  onChangeText={setPassword}
-                  secureTextEntry={!showPassword}
-                  autoCapitalize="none"
-                  autoCorrect={false}
-                />
-                <Button
-                  size="$2"
-                  bg="transparent"
-                  onPress={() => setShowPassword(!showPassword)}
-                  p="$1"
-                >
-                  {showPassword ? (
-                    <EyeOff size={20} color="$color10" />
-                  ) : (
-                    <Eye size={20} color="$color10" />
-                  )}
-                </Button>
-              </XStack>
-            </YStack>
+            <PasswordField
+              control={control}
+              name="password"
+              label="Password"
+              placeholder="Enter your password"
+            />
+
+            {/* Confirm Password Input */}
+            <PasswordField
+              control={control}
+              name="confirmPassword"
+              label="Confirm Password"
+              placeholder="Confirm your password"
+            />
 
             {/* Register Button */}
             <Button
               size="$4"
               bg="$green9"
               color="$green12"
-              onPress={handleRegister}
+              onPress={handleSubmit(onSubmit)}
               disabled={isLoading}
               mt="$2"
             >

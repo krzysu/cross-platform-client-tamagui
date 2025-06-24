@@ -21,7 +21,9 @@ export default function DashboardScreen() {
         <YStack gap="$6" maxW={600} width="100%" self="center" px="$4" py="$6">
           {/* Header */}
           <YStack gap="$2">
-            <H1 color="$color12">Dashboard</H1>
+            <H1 color="$color12" size="$8">
+              Dashboard
+            </H1>
             <Paragraph color="$color11">Welcome back, {user?.name}!</Paragraph>
           </YStack>
 

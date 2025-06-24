@@ -1,20 +1,51 @@
+import { useState } from 'react'
+import { Alert } from 'react-native'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
 import {
   YStack,
   XStack,
   H3,
-  Paragraph,
   Button,
   Card,
   Avatar,
   Text,
-  Input,
   ScrollView,
+  Sheet,
+  Input,
 } from 'tamagui'
-import { User, Mail, Calendar, Pencil } from '@tamagui/lucide-icons'
+import { User, Mail, Pencil, Save, X } from '@tamagui/lucide-icons'
 import { useAuth } from '../../contexts/AuthContext'
+import { FormField } from '../../components/forms/FormField'
+import { profileSchema, type ProfileFormData } from '../../lib/schemas'
 
 export default function ProfileScreen() {
   const { user } = useAuth()
+  const [isEditingProfile, setIsEditingProfile] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+
+  // Profile form
+  const profileForm = useForm<ProfileFormData>({
+    resolver: zodResolver(profileSchema),
+    mode: 'onBlur',
+    defaultValues: {
+      name: user?.name || '',
+      email: user?.email || '',
+    },
+  })
+
+  const onUpdateProfile = async (data: ProfileFormData) => {
+    try {
+      setIsLoading(true)
+      // In a real app, this would call an API to update the profile
+      Alert.alert('Success', 'Profile updated successfully!')
+      setIsEditingProfile(false)
+    } catch (error) {
+      Alert.alert('Error', 'Failed to update profile')
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   return (
     <YStack flex={1} bg="$background">
@@ -87,61 +118,85 @@ export default function ProfileScreen() {
                 />
               </XStack>
             </YStack>
-
-            {/* User ID Field */}
-            <YStack gap="$2">
-              <Text color="$color11" fontSize="$3" fontWeight="500">
-                User ID
-              </Text>
-              <XStack
-                bg="$color2"
-                borderColor="$borderColor"
-                borderWidth={1}
-                items="center"
-                px="$3"
-                height={50}
-              >
-                <Calendar size={20} color="$color10" />
-                <Input
-                  flex={1}
-                  borderWidth={0}
-                  bg="transparent"
-                  value={user?.id}
-                  editable={false}
-                  color="$color11"
-                />
-              </XStack>
-            </YStack>
           </YStack>
 
           {/* Action Buttons */}
           <YStack gap="$3">
-            <Button size="$4" bg="$blue9" color="$blue12" icon={<Pencil size={16} />}>
-              Edit Profile
-            </Button>
-
             <Button
               size="$4"
-              bg="$color3"
-              borderColor="$borderColor"
-              borderWidth={1}
-              color="$color11"
+              bg="$blue9"
+              color="$blue12"
+              icon={<Pencil size={16} />}
+              onPress={() => setIsEditingProfile(true)}
             >
-              Change Password
+              Edit Profile
             </Button>
           </YStack>
-
-          {/* Account Info */}
-          <Card bg="$blue2" borderColor="$blue6" p="$4">
-            <YStack gap="$2">
-              <H3 color="$blue11">Account Status</H3>
-              <Paragraph color="$blue11" size="$3">
-                Your account is active and verified. You have full access to all features.
-              </Paragraph>
-            </YStack>
-          </Card>
         </YStack>
       </ScrollView>
+
+      {/* Edit Profile Sheet */}
+      <Sheet
+        modal
+        open={isEditingProfile}
+        onOpenChange={setIsEditingProfile}
+        snapPoints={[85]}
+        dismissOnSnapToBottom
+      >
+        <Sheet.Overlay />
+        <Sheet.Handle />
+        <Sheet.Frame p="$4" gap="$4">
+          <XStack justify="space-between" items="center">
+            <H3>Edit Profile</H3>
+            <Button
+              size="$3"
+              circular
+              icon={<X size={20} />}
+              onPress={() => setIsEditingProfile(false)}
+            />
+          </XStack>
+
+          <ScrollView flex={1} showsVerticalScrollIndicator={false}>
+            <YStack gap="$4">
+              <FormField
+                control={profileForm.control}
+                name="name"
+                label="Full Name"
+                placeholder="Enter your full name"
+                icon={User}
+                autoCapitalize="words"
+              />
+
+              <FormField
+                control={profileForm.control}
+                name="email"
+                label="Email"
+                placeholder="Enter your email"
+                icon={Mail}
+                keyboardType="email-address"
+              />
+
+              <XStack gap="$3" mt="$4">
+                <Button flex={1} size="$4" onPress={() => setIsEditingProfile(false)}>
+                  Cancel
+                </Button>
+                <Button
+                  flex={1}
+                  size="$4"
+                  bg="$blue9"
+                  color="$blue12"
+                  icon={<Save size={16} />}
+                  onPress={profileForm.handleSubmit(onUpdateProfile)}
+                  disabled={isLoading}
+                  opacity={isLoading ? 0.6 : 1}
+                >
+                  Save Changes
+                </Button>
+              </XStack>
+            </YStack>
+          </ScrollView>
+        </Sheet.Frame>
+      </Sheet>
     </YStack>
   )
 }
