@@ -170,6 +170,10 @@ npx tsc --noEmit
 - **Manual**: `yarn build:web` for other hosting providers
 - **Mobile**: Needs to be prepared and tested for App Store/Google Play deployment
 
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
 ---
 
 This implementation demonstrates a production-ready cross-platform application architecture that balances developer experience, performance, and maintainability.
