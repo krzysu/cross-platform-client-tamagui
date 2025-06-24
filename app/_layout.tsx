@@ -7,7 +7,7 @@ import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native
 import { useFonts } from 'expo-font'
 import { SplashScreen, Stack } from 'expo-router'
 import { Provider } from '../contexts/Provider'
-import { useTheme, Spinner, YStack } from 'tamagui'
+import { Spinner, YStack } from 'tamagui'
 import { useAuth } from '../contexts/AuthContext'
 
 export {
@@ -52,13 +52,12 @@ const Providers = ({ children }: { children: React.ReactNode }) => {
 
 function RootLayoutNav() {
   const colorScheme = useColorScheme()
-  const theme = useTheme()
-  const { isAuthenticated, isLoading } = useAuth()
+  const { isLoading } = useAuth()
 
   // Show loading spinner while checking auth state
   if (isLoading) {
     return (
-      <YStack flex={1} justify="center" items="center" bg="$background">
+      <YStack fullscreen flex={1} justify="center" items="center">
         <Spinner size="large" color="$blue10" />
       </YStack>
     )
