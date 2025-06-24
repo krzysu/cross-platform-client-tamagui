@@ -45,7 +45,7 @@ I selected **"Expo Router (beta) - Expo Router starter with Tamagui set up"** ov
 - Secure token storage (mobile) with localStorage fallback (web)
 - Simple global state management
 
-**Code Quality**: TypeScript + Biome + GitHub Actions
+**Code Quality**: TypeScript + Biome (over ESLint/Prettier) + GitHub Actions
 
 - Full type safety with modern linting/formatting
 - Automated CI/CD pipeline
@@ -80,7 +80,7 @@ I selected **"Expo Router (beta) - Expo Router starter with Tamagui set up"** ov
 - Node.js 18+
 - Yarn 4.5.0+
 - iOS Simulator (for iOS development)
-- Android Studio/Emulator (for Android development) <- NOT TESTED, I run only web and ios versions in dev mode
+- Android Studio/Emulator (for Android development)
 
 ### Installation & Development
 
@@ -98,17 +98,15 @@ I selected **"Expo Router (beta) - Expo Router starter with Tamagui set up"** ov
    yarn start
    ```
 
-3. **Run on specific platforms:**
+3. **Run in dev mode on specific platforms:**
 
    ```bash
    # Web development server
    yarn web
 
    # iOS simulator (requires Xcode)
-   yarn ios
-
-   # Android emulator (requires Android Studio)
-   yarn android
+   yarn start
+   # when dev server starts, press `i` to open in iOS simulator
    ```
 
 ### Building for Production
@@ -117,11 +115,11 @@ I selected **"Expo Router (beta) - Expo Router starter with Tamagui set up"** ov
 # Build web version
 yarn build:web
 
-# Build for iOS (requires Xcode) <- NOT TESTED, required further configuration
-npx expo run:ios --configuration Release
+# Build for iOS (requires Xcode with iOS 18.5 platform support installed)
+yarn ios --configuration Release
 
-# Build for Android (requires Android Studio) <- NOT TESTED, required further configuration
-npx expo run:android --variant release
+# Build for Android (requires Android Studio) <- NOT TESTED
+yarn android --variant release
 ```
 
 ## Code Quality
